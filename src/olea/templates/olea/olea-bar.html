@@ -1,0 +1,46 @@
+<!--
+Iguana (c) by Marc Ammon, Moritz Fickenscher, Lukas Fridolin,
+Michael Gunselmann, Katrin Raab, Christian Strate
+
+Iguana is licensed under a
+Creative Commons Attribution-ShareAlike 4.0 International License.
+
+You should have received a copy of the license along with this
+work. If not, see <http://creativecommons.org/licenses/by-sa/4.0/>.
+-->
+{% load i18n %}
+{% load static %}
+
+<form id="olea" method="post" action="{% url 'olea:processOlea' project=project.name_short %}">{% csrf_token %}
+    <div class="input-group">
+        <input type="text" id="expression" title="{% include "olea/olea_tooltip.html" %}" class="form-control" name="expression" {{oleafocus}} value="{{oleaexpression}}" placeholder="{% trans 'Place your change expression here' %}" autocomplete="off" />
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">{% trans 'Go' %}</button>
+        </span>
+    </div>
+    {# set the 'olea_sprint' variable to add any newly created issue right to that sprint #}
+    {% if olea_sprint and olea_sprint.is_active %}
+        <input type="hidden" name="currentsprint" value="{{olea_sprint.seqnum}}">
+    {% else %}
+        <input type="hidden" name="currentsprint" value="">
+    {% endif %}
+    <input type="hidden" name="next" value="{{request.get_full_path}}">
+</form>
+
+{% block extra_script %}
+    <script src="{% static "js/tribute.min.js" %}"></script>
+    <script src="{% static "js/tribute_wrapper.js" %}"></script>
+    <script>
+    $(document).ready(function(){
+        var tr = new TributeWrapper();
+        tr.addCollection('@', "/project/userac/{{ project.name_short }}/");
+        tr.addCollection('>', "/project/issueac/{{ project.name_short }}/", />{{ project.name_short }}-(\d+)/);
+        tr.addCollection('~', "/project/issueac/{{ project.name_short }}/", /~{{ project.name_short }}-(\d+)/);
+        tr.addCollection('#', "/project/tagac/{{ project.name_short }}/");
+        tr.addCollection('!', "/issue/prioac/");
+        tr.addCollection(':', "/issue/typeac/");
+        tr.addCollection('&', "/project/kanbanac/{{ project.name_short }}/");
+        tr.attach(document.querySelectorAll("#expression"));
+    });
+    </script>
+{% endblock %}
