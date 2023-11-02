@@ -10,5 +10,5 @@ target "iguana" {
     output = [ "type=registry" ]
     platforms = [ "linux/amd64", "linux/arm64" ]
     dockerfile = "Dockerfile"
-    tags = [ "registry.pupgizmo.com/library/iguana:${TAG}"]
+    tags = [ "registry.pupgizmo.com/library/iguana:${TAG}", "registry.pupgizmo.com/library/iguana:latest"]
 }
