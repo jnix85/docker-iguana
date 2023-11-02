@@ -1,0 +1,41 @@
+<!--
+Iguana (c) by Marc Ammon, Moritz Fickenscher, Lukas Fridolin,
+Michael Gunselmann, Katrin Raab, Christian Strate
+
+Iguana is licensed under a
+Creative Commons Attribution-ShareAlike 4.0 International License.
+
+You should have received a copy of the license along with this
+work. If not, see <http://creativecommons.org/licenses/by-sa/4.0/>.
+-->
+{% load i18n %}
+{% load static %}
+{% load bootstrap3 %}
+{% load markdown_data %}
+
+
+{# display the form #}
+{% if form.fields|length > 1 %}
+    {% bootstrap_form form %}
+{% else %}
+    {# do not display the title if more than one field is in the form #}
+    {% bootstrap_form form layout='inline' %}
+{% endif %}
+
+{% block extra_script %}
+    {{ form.media }}
+    <script src="{% static "js/tribute.min.js" %}"></script>
+    <script src="{% static "js/tribute_wrapper.js" %}"></script>
+    {{ project|get_issue_markdown_data|json_script:"issue_markdown_data" }}
+    {{ project|get_user_markdown_data|json_script:"user_markdown_data" }}
+    <script>
+    $(document).ready(function(){
+        var tr = new TributeWrapper();
+        tr.addCollection('@', "/project/userac/{{ project.name_short }}/");
+        tr.addCollection('{{ project.name_short }}-',
+                         "/project/issueac/{{ project.name_short }}/",
+                         /{{ project.name_short }}-(\d+)/);
+        tr.attach(document.querySelectorAll(".wmd-input"));
+    });
+    </script>
+{% endblock %}

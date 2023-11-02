@@ -1,0 +1,37 @@
+<!--
+Iguana (c) by Marc Ammon, Moritz Fickenscher, Lukas Fridolin,
+Michael Gunselmann, Katrin Raab, Christian Strate
+
+Iguana is licensed under a
+Creative Commons Attribution-ShareAlike 4.0 International License.
+
+You should have received a copy of the license along with this
+work. If not, see <http://creativecommons.org/licenses/by-sa/4.0/>.
+-->
+{% load i18n %}
+{% load cache %}
+{% cache 86400 backlog_issue_template issue.project.name_short issue.number request.user.username %}
+<tr id="{% if issue.sprint %}sprint{% else %}backlog{% endif %}_issue_{{issue.number}}" class="backlog-issue">
+	<td style="white-space: nowrap;" title={{issue.type}}>
+		<div class="issue-type text-muted {{issue.type|lower}}">
+			{{ issue.type|slice:":1" }}
+		</div>
+		{% include "issue/issue_info_template.html" %}
+	{% if view.get_sqn_s != -1 %}
+		<td style="padding-left: 0px">
+		<div class="pull-right">
+				<form style="display:inline-block" id="ats{{issue.number}}" method="post" action="{% url 'sprint:assigntosprint' project=project.name_short %}" >{% csrf_token %}
+					<input type="hidden" name="sqn_i" value={{issue.number}} />
+					<button style="padding:0px" type="submit" class="btn btn-link">
+						{% if issue.sprint %}
+							<span class="glyphicon glyphicon-minus" title="{% trans "Remove from sprint" %}"></span>
+						{% else %}
+							<span class="glyphicon glyphicon-plus" title="{% trans "Add to sprint" %}"></span>
+						{% endif %}
+					</button>
+				</form>
+		</div>
+		</td>
+	{% endif %}
+</tr>
+{% endcache %}
