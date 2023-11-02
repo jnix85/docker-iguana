@@ -1,0 +1,71 @@
+<!--
+Iguana (c) by Marc Ammon, Moritz Fickenscher, Lukas Fridolin,
+Michael Gunselmann, Katrin Raab, Christian Strate
+
+Iguana is licensed under a
+Creative Commons Attribution-ShareAlike 4.0 International License.
+
+You should have received a copy of the license along with this
+work. If not, see <http://creativecommons.org/licenses/by-sa/4.0/>.
+-->
+<!DOCTYPE html>
+{% load i18n %}
+{% load static %}
+{% load breadcrumbs %}
+{% load bootstrap3 %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{LANGUAGE_CODE}}">
+<head>
+	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>{% block title %}Iguana{% endblock %}</title>
+	<meta name="description" content="{% block description %}{% trans "Open source issue/ticket managment with a Kanban board." %}{% endblock %}">
+	<meta name="keywords" content="{% block keywords %}{% trans "Kanban, board, issue, ticket, software, development, open" %}{% endblock %}">
+
+	{% block css %}
+		{% bootstrap_css %}
+		<link rel="stylesheet" href="{% static "css/custom_bootstrap.css" %}" />
+		<link rel="stylesheet" href="{% static "css/style.css" %}" />
+	{% endblock css %}
+	{% block extra_css %}
+        <!-- Include individual files as needed -->
+    {% endblock extra_css %}
+
+    {% block javascript %}
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        {% bootstrap_javascript jquery=1 %}
+    {% endblock javascript %}
+    {% block extra_script %}
+        <!-- Include individual files as needed -->
+    {% endblock %}
+
+	{% block additional_stuff %}{% trans "" %}{% endblock %}
+</head>
+
+<body>
+	{% include "navigation.html" %}
+	<div id="content">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					{% breadcrumbs %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					{% for message in messages %}
+						<div class="alert alert-{{ message.tags }}">
+							{{ message }}
+						</div>
+					{% endfor %}
+					{% block content %}{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- keep scroll position on all pages -->
+	<script type="text/javascript" src="{% static "js/maintainscroll.jquery.min.js" %}"></script>
+</body>
+</html>
